@@ -1,0 +1,1 @@
+[Python3チートシート](https://qiita.com/1429takahiro/items/710a877b1afb1626334f#7-%E7%B5%84%E3%81%BF%E8%BE%BC%E3%81%BF%E9%96%A2%E6%95%B0%E7%89%B9%E6%AE%8A%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89)
