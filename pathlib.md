@@ -49,20 +49,19 @@ for filename in [x for x in p.iterdir() if x.is_file()]:
 その他、symboolicfile等の条件式あり。
 
 ### Path操作
-c:hoge/hoge2/hoge3.txt
-`Path(path_text).parent` c:hoge/hoge2
-`Path(path_text).parent.parent`  c:hoge
-`Path(path_text).parent.parent.parent` c:
-`Path(path_text).parent.parent.parent.parent` c: ドライブまで達したらドライブ名のみを返す
-`Path(path_text).with_suffix(".hoge")` c:hoge/hoge2/hoge3.hoge 拡張子の置き換え(txt->hoge)
-`Path(path_text).with_name("hoge999.txt")`c:hoge/hoge2/hoge999.txt ファイル名の置き換え (hoge3->hoge999)
-`Path(path_text) / "hogehoge.txt"` c:hoge\hoge2\hoge3.txt\hogehoge.txt 子ディレクトリの追加
-`Path(path_text).drive` c:
-`Path(path_text).name`  hoge3.txt  ファイル名
-`Path(path_text).stem`  hoge  拡張子除くファイル名
-`Path(path_text).suffix`  .txt 拡張子(.が付く)
-`Path(path_text).parts`   ('c:', 'hoge', 'hoge2', 'hoge3.txt')  パスの各パーツを分離
-``
+c:hoge/hoge2/hoge3.txt  
+`Path(path_text).parent` c:hoge/hoge2  
+`Path(path_text).parent.parent`  c:hoge  
+`Path(path_text).parent.parent.parent` c:  
+`Path(path_text).parent.parent.parent.parent` c: ドライブまで達したらドライブ名のみを返す  
+`Path(path_text).with_suffix(".hoge")` c:hoge/hoge2/hoge3.hoge 拡張子の置き換え(txt->hoge)  
+`Path(path_text).with_name("hoge999.txt")`c:hoge/hoge2/hoge999.txt ファイル名の置き換え (hoge3->hoge999)  
+`Path(path_text) / "hogehoge.txt"` c:hoge\hoge2\hoge3.txt\hogehoge.txt 子ディレクトリの追加  
+`Path(path_text).drive` c:  
+`Path(path_text).name`  hoge3.txt  ファイル名  
+`Path(path_text).stem`  hoge  拡張子除くファイル名  
+`Path(path_text).suffix`  .txt 拡張子(.が付く)  
+`Path(path_text).parts`   ('c:', 'hoge', 'hoge2', 'hoge3.txt')  パスの各パーツを分離  
 
 ### 注意
 - ファイル名を弄る場合(文字列計算をする場合)はカッコでくくること。
