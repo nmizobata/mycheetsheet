@@ -1,3 +1,11 @@
+要確認
+- Githubには新しいコミットがあり、ローカルのプロジェクトでGithubをプルする前にdevelopmentブランチで編集作業を開始。
+- developブランチでファイルを編集保存した後、masterにチェックアウト。この状況では、Github上の新しいコミットは未反映にも関わらず、masterにさきほど編集したファイルが生成された状況。
+- ここでgit pull origin masterでgithubからマスターにプルしようとしても、すでにアップデート済と言われる。(一部のファイルはGithubの方が新しいにもかかわらず、である)
+- githubとの同期をとるブランチ(ここではmaster)と、ローカルで編集するブランチ(ここではdevelopment)は必ず分けること。
+- 編集ブランチでファイルを編集し保存しても、masterに移動しなければ、git pull origin masterの実行は可能。(masterブランチはGithubの最新の構成、developmentブランチは先ほど編集したファイル以外はmasterブランチよりと同等または古いファイル)となる。
+- 編集ブランチでgit mergeを実行し、github/masterと同期を取る。この際、競合する場合は競合を解消する。
+
 
 ## Gitコマンド
 ### Git初期設定
