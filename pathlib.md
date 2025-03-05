@@ -19,6 +19,35 @@ files_py = pathobj.rglob("*.py")
 for file_py in files_py:
     print("現ディレクトリの.pyファイル:{}".format(file_py))
 ```
+## ディレクトリ作成/削除
+`pathobj.mkdir()`  パスの作成。親ディレクトリがない場合、すでにディレクトリが存在している場合エラー。  
+`pathobj.mkdir(parents=True)`  親ディレクトリが無くても作成することができる  
+`pathobj.mkdir(exist_ok=True)` すでにディレクトリが存在していてもエラーにならない。(ディレクトリではなくファイルの場合はエラーになる)  
+`pathobj.parent.mkdir(parents=True, exist_ok=True)`  親ディレクトリまでを作成。すでにディレクトリがあってもエラーにならない。  
+`pathobj.rmdir()`  パスの削除。中身が空の場合のみ。中身がある場合はエラーになる。  
+丸ごと削除する場合は`shutil.rmtree(pathobj)`を使う。  
+## ファイルの作成/削除
+`pathobj.touch()`  空のファイルを作成する。既存の場合はタイムスタンプを更新。親ディレクトがないとエラー。  上記`pathobj.parent.mkdir(parents=True, exist_ok=True)`をまず実行する。  
+`pathobj.touch(exist_ok=False)`  既存のファイルがある場合はエラーになる  
+`pathobj.unlink()`  ファイルの削除。ファイルが存在しない場合はエラー。ディレクトリもエラー。  
+`pathobj.unlink(missing_ok=True)`  ファイルが存在しない場合でもエラーにならない。  
+## ファイルテキスト読み取り書き込み
+読み込み
+```
+with pathobj.open(mode='r') as f:  mode='r'は省略可。
+    text = f.read()
+```
+```
+pathobj.read_text()    ファイル全体を読み込み
+```
+書き込み
+```
+with pathobj.open(mode='w') as f:
+    f.write(text)
+```
+```
+pathobj.write_text(text)    textを書き込み。同名のファイルがある場合は上書きされる。   
+```
 ## 活用例
 ##### Path(\_\_file\_\_)を基準にファイル操作すると、自分のファイルを基準にファイルアクセスができる
 hoge/hoge1/hoge_current.txtから、hoge/hoge2/hoge3.txtを相対パスで指定する
@@ -47,6 +76,16 @@ for filename in [x for x in p.iterdir() if x.is_file()]:
 ```
 ##### シンボリックファイル
 その他、symboolicfile等の条件式あり。
+
+##### 一覧からすべてのファイルを削除
+```
+for p in p_dir.iterdir():
+    if p.is_file():
+        p.unlink()
+```
+```
+[p.unlink() for p in p_dir.iterdir() if p.is_fiule()]
+```
 
 ### Path操作
 c:hoge/hoge2/hoge3.txt  
