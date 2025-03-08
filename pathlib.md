@@ -61,6 +61,8 @@ p = Path("c:hoge/hoge2/hoge3.txt")
 注意: 絶対パス情報を使うこと。ファイル名だけ、フォルダ名だけ、で実行すると、新しい名前でPython実行ファイルのルートに保存される。
 `p.rename(p.parent / "gegege.txt")`  "c:hoge/hoge2/gegege.txt"に名前を変更
 `p.parent.rename(p.parent.parent / "gege")` "c:hoge/gege/" フォルダにファイルがあってもフォルダ名を変更可
+`p.rename(p.parent / "test" / p.name)` "c:hoge/test/hoge3.txt"へファイルを移動。("test"フォルダが存在していること)
+注意: ファイルのコピー機能は存在しない。shutilを使うこと。
 
 ## ファイルテキスト読み取り書き込み
 読み込み
@@ -85,10 +87,11 @@ hoge/hoge1/hoge_current.txtから、hoge/hoge2/hoge3.txtを相対パスで指定
 ```
 Path(__file__).parent.parent / hoge2 / hoge3.txt
 ```
-##### ファイル名の拡張子直前に'_new'を付加したパス名を取得
+##### ファイル名の拡張子直前に'_new'を付加したパス情報を取得
 ```
-path_txt = "c:hoge/hoge2/hoge3.txt"
-newPath_txt = Path(path_txt).parent / "{}_new{}".format(Path(path_txt).stem,Path(path.txt).suffix
+oldPath = Path("c:hoge/hoge2/hoge3.txt")
+newPath = oldPath.parent / "{}_new{}".format(oldPath.stem,oldPath.suffix)
+newPath = oldPath.with_stem("{}_new".format(oldPath.stem))
 ```
 ##### ファイルが存在するか
 ```
