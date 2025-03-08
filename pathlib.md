@@ -1,10 +1,9 @@
 # Pathlib メモ
 ## import文
 `from pathlib import Path`  pathlibをインポートする
-## Pathのメソッド
+
+## パス情報の取得
 `pathobj = Path(".")`  現ディレクトリのPathオブジェクトを得る
-`pathobj.absolute()` 現ディレクトリの絶対パスの文字列を得る
-`pathobj.resolve()` 現ディレクトリの絶対パスの文字列を得る
 `Path("/a/a/a/").cwd()` Pathオブジェクトの内容に関係なく、現在のディレクトリを得る
 `pathobj.iterdir()` 現ディレクトリ内のファイルやディレクトリを得る(iterdir()はイテレータオブジェクトなので、リスト化する必要がある)
 ```
@@ -19,18 +18,50 @@ files_py = pathobj.rglob("*.py")
 for file_py in files_py:
     print("現ディレクトリの.pyファイル:{}".format(file_py))
 ```
-## ディレクトリ作成/削除
-`pathobj.mkdir()`  パスの作成。親ディレクトリがない場合、すでにディレクトリが存在している場合エラー。  
-`pathobj.mkdir(parents=True)`  親ディレクトリが無くても作成することができる  
-`pathobj.mkdir(exist_ok=True)` すでにディレクトリが存在していてもエラーにならない。(ディレクトリではなくファイルの場合はエラーになる)  
-`pathobj.parent.mkdir(parents=True, exist_ok=True)`  親ディレクトリまでを作成。すでにディレクトリがあってもエラーにならない。  
-`pathobj.rmdir()`  パスの削除。中身が空の場合のみ。中身がある場合はエラーになる。  
+
+
+## パス情報の操作 (実ファイル/フォルダの変更は行わず情報の操作のみ)
+p = Path(c:hoge/hoge2/hoge3.txt)
+`p.parent` c:hoge/hoge2  
+`p.parent.parent`  c:hoge  
+`p.parent.parent.parent` c:  
+`p.parent.parent.parent.parent` c: ドライブまで達したらドライブ名のみを返す  
+`p.with_suffix(".hoge")` c:hoge/hoge2/hoge3.hoge 拡張子情報の変更 = p.parent / (p.stem + ".hoge")
+`p.with_name("hoge999.txt")`c:hoge/hoge2/hoge999.txt ファイル名情報の変更 = p.parent / "hoge999.txt"
+`p.with_stem("hogehoge")` c:hoge/hoge2/hogehoge.txt 拡張子除くファイル名の変更 = p.parent / "hogehoge"+p.suffix
+`p / "hogehoge"` c:hoge\hoge2\hoge3.txt\hogehoge 子ディレクトリの追加  
+`p.drive` c:  
+`p.name`  hoge3.txt  ファイル名  
+`p.stem`  hoge  拡張子除くファイル名  
+`p.suffix`  .txt 拡張子(.が付く)  
+`p.parts`   ('c:', 'hoge', 'hoge2', 'hoge3.txt')  パスの各パーツを分離  
+`text = p.absolute()` 現ディレクトリの絶対パスの文字列を得る
+`text = p.resolve()` 現ディレクトリの絶対パスの文字列を得る
+
+## 実ディレクトリに対する操作
+### ファイルの作成/削除
+p = Path("c:hoge/hoge2/hoge3.txt")
+`p.touch()`  hoge3.txtという空のファイルを作成する。既存の場合はタイムスタンプを更新。
+親ディレクトがないとエラー。`p.parent.mkdir(parents=True, exist_ok=True)`をまず実行する。  
+`p.touch(exist_ok=False)`  既存のファイルがある場合はエラーになる  
+`p.unlink()`  ファイルの削除。ファイルが存在しない場合はエラー。ディレクトリもエラー。  
+`p.unlink(missing_ok=True)`  ファイルが存在しない場合でもエラーにならない。  
+
+### ディレクトリ作成/削除
+p = Path("c:hoge/hoge2")
+`p.mkdir()`  パスの作成。親ディレクトリ(c:hoge)がない時、すでにディレクトリが存在している場合エラー。  
+`p.mkdir(parents=True)`  親ディレクトリ(c:hoge)が無くても、c:hogeを作ってhoge2ディレクトリを作成。  
+`p.mkdir(exist_ok=True)` すでにディレクトリが存在していてもエラーにならない。(ディレクトリではなくファイルの場合はエラーになる)  
+`p.parent.mkdir(parents=True, exist_ok=True)`  親ディレクトリが無くても作成。すでにディレクトリがあってもエラーにならない。  
+`p.rmdir()`  パスの削除。中身が空の場合のみ。中身がある場合はエラーになる。  
 丸ごと削除する場合は`shutil.rmtree(pathobj)`を使う。  
-## ファイルの作成/削除
-`pathobj.touch()`  空のファイルを作成する。既存の場合はタイムスタンプを更新。親ディレクトがないとエラー。  上記`pathobj.parent.mkdir(parents=True, exist_ok=True)`をまず実行する。  
-`pathobj.touch(exist_ok=False)`  既存のファイルがある場合はエラーになる  
-`pathobj.unlink()`  ファイルの削除。ファイルが存在しない場合はエラー。ディレクトリもエラー。  
-`pathobj.unlink(missing_ok=True)`  ファイルが存在しない場合でもエラーにならない。  
+
+### 名前の変更
+p = Path("c:hoge/hoge2/hoge3.txt")
+注意: 絶対パス情報を使うこと。ファイル名だけ、フォルダ名だけ、で実行すると、新しい名前でPython実行ファイルのルートに保存される。
+`p.rename(p.parent / "gegege.txt")`  "c:hoge/hoge2/gegege.txt"に名前を変更
+`p.parent.rename(p.parent.parent / "gege")` "c:hoge/gege/" フォルダにファイルがあってもフォルダ名を変更可
+
 ## ファイルテキスト読み取り書き込み
 読み込み
 ```
@@ -86,21 +117,6 @@ for p in p_dir.iterdir():
 ```
 [p.unlink() for p in p_dir.iterdir() if p.is_fiule()]
 ```
-
-### Path操作
-c:hoge/hoge2/hoge3.txt  
-`Path(path_text).parent` c:hoge/hoge2  
-`Path(path_text).parent.parent`  c:hoge  
-`Path(path_text).parent.parent.parent` c:  
-`Path(path_text).parent.parent.parent.parent` c: ドライブまで達したらドライブ名のみを返す  
-`Path(path_text).with_suffix(".hoge")` c:hoge/hoge2/hoge3.hoge 拡張子の置き換え(txt->hoge)  
-`Path(path_text).with_name("hoge999.txt")`c:hoge/hoge2/hoge999.txt ファイル名の置き換え (hoge3->hoge999)  
-`Path(path_text) / "hogehoge.txt"` c:hoge\hoge2\hoge3.txt\hogehoge.txt 子ディレクトリの追加  
-`Path(path_text).drive` c:  
-`Path(path_text).name`  hoge3.txt  ファイル名  
-`Path(path_text).stem`  hoge  拡張子除くファイル名  
-`Path(path_text).suffix`  .txt 拡張子(.が付く)  
-`Path(path_text).parts`   ('c:', 'hoge', 'hoge2', 'hoge3.txt')  パスの各パーツを分離  
 
 ### 注意
 - ファイル名を弄る場合(文字列計算をする場合)はカッコでくくること。
