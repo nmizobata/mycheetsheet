@@ -50,3 +50,27 @@ class A
 a = A.name
 A.name = b
 ```
+
+## 注意: Pythonのクラス変数
+- Pythonではクラス変数を事前にクラス内で宣言しなくても外部から直接追加(動的追加)することができる。この柔軟性により、クラスで使用を想定していない変数を外部で入力後参照してもエラーにはならない。しかし、変数が衝突したり型エラーが起きたりするなどのリスクが高まることに注意が必要である。
+```
+class A:
+    def __init__(self):
+        pass
+
+# クラス定義の外でクラス変数を追加
+A.aaaa = "test"
+b = A.aaaa
+print(b)  # "test"と表示される
+```
+- クラス変数の動的な追加を禁止する方法の一つは__slots__の使用。__slots__=[]とすればすべてのクラス変数の動的追加を禁止することができる。(とはいえ、VSCodeではエラーが起きずに実行できているが)
+```
+class A:
+    __slots__ = ['existing_var']
+
+    def __init__(self):
+        self.existing_var = "initial value"
+
+# クラス定義の外でクラス変数を追加しようとするとエラーが発生する
+A.aaaa = "test"  # AttributeError: 'A' object has no attribute 'aaaa'
+```
