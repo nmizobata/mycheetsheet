@@ -11,6 +11,7 @@ files_and_dirs_itr = p.iterdir()
 for file_and_dir in files_and_dirs_itr:
     print("現ディレクトリの中身:{}".format(file_and_dir))
 ``` 
+条件付きでのパス情報取得はrglob(条件),glob(条件) を使う。一覧を得たい場合はiterdir()を使う。
 `pathobj.rglob()` ワイルドカード検索→イテレータオブジェクト 現ディレクトリだけでなくサブディレクトリのものも検出する。
 `pathobj.glob()` ワイルドカード検索→イテレータオプジェクト 現ディレクトリだけで検出する。
 ```
